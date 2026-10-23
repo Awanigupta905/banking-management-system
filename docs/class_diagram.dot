@@ -1,0 +1,20 @@
+digraph cls {
+  rankdir=TB; nodesep=0.5; ranksep=0.8; fontname="Helvetica"; node [fontname="Helvetica", fontsize=11, shape=record, style=filled, fillcolor="#f4f6fa"]; edge [fontname="Helvetica", fontsize=9];
+  label="Banking Management System - Class (structure) Diagram"; labelloc=t; fontsize=16;
+
+  User     [label="{User  (users.txt)|+ id : int\l+ name : char[]\l+ pass : char[]\l+ role : int  (1 Customer, 2 Employee,\l   3 Manager, 4 Admin)\l+ active : int\l+ logged_in : int\l|+ user_get() / user_put()\l+ user_find() / user_find_name()\l}"];
+  Account  [label="{Account  (accounts.txt)|+ id : int\l+ user_id : int\l+ balance : double\l|+ account_get() / account_put()\l+ account_find_id()\l+ account_find_user()\l}"];
+  Txn      [label="{Transaction  (transactions.txt)|+ id : int\l+ account_id : int\l+ type : DEPOSIT, WITHDRAW,\l   TRANSFER_OUT, TRANSFER_IN,\l   LOAN_CREDIT\l+ amount : double\l+ details, time : char[]\l|+ txn_get()\l+ txn_add()\l}"];
+  Loan     [label="{Loan  (loans.txt)|+ id : int\l+ account_id : int\l+ amount : double\l+ status : PENDING, ASSIGNED,\l   APPROVED, REJECTED\l+ emp_id : int\l|+ loan_get() / loan_put()\l+ loan_find()\l}"];
+  Feedback [label="{Feedback  (feedback.txt)|+ id : int\l+ user_id : int\l+ time, msg : char[]\l|+ feedback_get()\l}"];
+  Table    [label="{Table  (file layer)|+ path : char*\l+ rec_size : int\l+ fd : int\l|+ rec_read() / rec_write()\l+ rec_lock() / rec_unlock()   (one record)\l+ table_lock() / table_unlock()  (whole file)\l+ rec_count()\l}", fillcolor="#f8e0e0"];
+  Cmd      [label="{Command  (server.c table)|+ name : char*\l+ role : int\l+ nargs : int\l+ fn : handler\l|+ process_request()\l+ cmd_deposit(), cmd_withdraw(),\l   cmd_transfer(), cmd_apply_loan() ...\l}", fillcolor="#fdf3d8"];
+
+  User -> Account  [label="1 .. 0..1\n(customers only)", arrowhead=none];
+  Account -> Txn   [label="1 .. *", arrowhead=none];
+  Account -> Loan  [label="1 .. *", arrowhead=none];
+  User -> Feedback [label="1 .. *", arrowhead=none];
+  User -> Loan     [label="employee assigned\nto 0..*", style=dashed, arrowhead=none];
+  Table -> User [style=dotted, label="stores"]; Table -> Account [style=dotted]; Table -> Txn [style=dotted]; Table -> Loan [style=dotted]; Table -> Feedback [style=dotted];
+  Cmd -> Table [label="uses", style=dashed];
+}
